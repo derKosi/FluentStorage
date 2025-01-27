@@ -272,6 +272,32 @@ namespace FluentStorage.Tests.Integration.Blobs {
 		}
 
 		[Fact]
+		public async Task Open_blob_exists_returns_stream() {
+			string existingBlobPath = $"{Guid.NewGuid()}/existing-blob.txt";
+
+			await _storage.WriteTextAsync(existingBlobPath, "Hello, Blob!");
+
+			var result = await _storage.OpenReadAsync(existingBlobPath);
+			Assert.NotNull(result);
+
+			using var reader = new StreamReader(result);
+			string content = await reader.ReadToEndAsync();
+			Assert.Equal("Hello, Blob!", content);
+		}
+
+
+		[Fact]
+		public async Task Open_empty_blob_returns_empty_stream() {
+			string emptyBlobPath = $"{Guid.NewGuid()}/empty-blob.txt";
+
+			await _storage.WriteAsync(emptyBlobPath, new MemoryStream(new byte[0]));
+			Stream result = await _storage.OpenReadAsync(emptyBlobPath);
+
+			Assert.NotNull(result);
+			Assert.Equal(0, result.Length);
+		}
+
+		[Fact]
 		public async Task Open_copy_to_memory_stream_succeeds() {
 			string id = await GetRandomStreamIdAsync();
 			IBlobStorage ms = StorageFactory.Blobs.InMemory();

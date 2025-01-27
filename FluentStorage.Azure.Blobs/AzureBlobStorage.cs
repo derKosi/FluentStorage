@@ -92,7 +92,6 @@ namespace FluentStorage.Azure.Blobs {
 			return await Task.WhenAll(fullPaths.Select(p => GetBlobAsync(p, cancellationToken))).ConfigureAwait(false);
 		}
 
-
 		public async Task<Stream> OpenReadAsync(string fullPath, CancellationToken cancellationToken = default) {
 			GenericValidation.CheckBlobFullPath(fullPath);
 
@@ -101,19 +100,21 @@ namespace FluentStorage.Azure.Blobs {
 			BlockBlobClient client = container.GetBlockBlobClient(path);
 
 			try {
-				//current SDK fails to download 0-sized files
-				Response<BlobProperties> p = await client.GetPropertiesAsync().ConfigureAwait(false);
-				if (p.Value.ContentLength == 0)
+				// Backward compatibility: Explicitly handle empty blobs to ensure they return a MemoryStream,
+				// preserving the behavior of the old implementation.
+				var properties = await client.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+				if (properties.Value.ContentLength == 0) {
 					return new MemoryStream();
+				}
 
-				Response<BlobDownloadInfo> response = await client.DownloadAsync(cancellationToken).ConfigureAwait(false);
-
-				return response.Value.Content;
+				return await client.OpenReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 			catch (RequestFailedException ex) when (ex.ErrorCode == "BlobNotFound") {
 				return null;
 			}
 		}
+
 
 		public Task<ITransaction> OpenTransactionAsync() => throw new NotImplementedException();
 
