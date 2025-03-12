@@ -35,7 +35,7 @@ namespace FluentStorage {
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public static IAzureBlobStorage AzureBlobStorageWithSharedKey(this IBlobStorageFactory factory,
 		   string accountName,
@@ -54,7 +54,7 @@ namespace FluentStorage {
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public static IAzureDataLakeStorage AzureDataLakeStorageWithSharedKey(this IBlobStorageFactory factory,
 		   string accountName,
@@ -157,7 +157,7 @@ namespace FluentStorage {
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public static IAzureBlobStorage AzureBlobStorageWithTokenCredential(this IBlobStorageFactory factory,
 		   string accountName,
@@ -168,16 +168,17 @@ namespace FluentStorage {
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="factory"></param>
 		/// <param name="sas"></param>
+		/// <param name="options"></param>
 		/// <returns></returns>
 		public static IAzureBlobStorage AzureBlobStorageWithSas(this IBlobStorageFactory factory,
-		   string sas) {
+		   string sas, BlobClientOptions options = default) {
 			TryParseSasUrl(sas, out string accountName, out string containerName, out string sasQuery);
 
-			var client = new BlobServiceClient(new Uri(sas));
+			var client = new BlobServiceClient(new Uri(sas), options);
 
 			return new AzureBlobStorage(client, accountName, containerName: containerName);
 		}
@@ -257,7 +258,7 @@ namespace FluentStorage {
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public static StorageConnectionString ForAzureBlobStorageWithAzureAd(this IConnectionStringFactory factory,
 		   string accountName,
@@ -273,7 +274,7 @@ namespace FluentStorage {
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public static StorageConnectionString ForAzureDataLakeStorageWithAzureAd(this IConnectionStringFactory factory,
 		   string accountName,
