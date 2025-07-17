@@ -161,7 +161,7 @@ namespace FluentStorage.Blobs.Files {
 				fullPath = _fileSystem.Path.Combine(_directoryFullName, extraPath);
 
 				dir = fullPath;
-				if (!_fileSystem.Directory.Exists(dir))
+				if (!_fileSystem.Directory.Exists(dir) && createIfNotExists)
 					_fileSystem.Directory.CreateDirectory(dir);
 			}
 
@@ -257,7 +257,7 @@ namespace FluentStorage.Blobs.Files {
 				GenericValidation.CheckBlobFullPaths(fullPaths);
 
 				foreach (string fullPath in fullPaths) {
-					bool exists = _fileSystem.File.Exists(GetFilePath(StoragePath.Normalize(fullPath)));
+					bool exists = _fileSystem.File.Exists(GetFilePath(StoragePath.Normalize(fullPath), false));
 					result.Add(exists);
 				}
 			}
