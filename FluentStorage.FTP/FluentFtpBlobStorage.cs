@@ -192,7 +192,7 @@ namespace FluentStorage.FTP {
 		}
 
 		public void Dispose() {
-			if (_dispose && _client.IsDisposed) {
+			if (_dispose && !_client.IsDisposed) {
 				_client.Dispose();
 			}
 		}
