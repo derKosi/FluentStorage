@@ -117,10 +117,14 @@ namespace FluentStorage.AWS.Blobs {
 			//subfolders are listed in another field (what a funny name!)
 
 			//prefix is absolute too
-			result.AddRange(
-			   response.CommonPrefixes
-				  .Where(p => !StoragePath.IsRootPath(p))
-				  .Select(p => new Blob(p, BlobItemKind.Folder)));
+			// CommonPrefixes can be null https://github.com/aws/aws-sdk-net/blob/main/sdk/src/Services/S3/Generated/Model/ListObjectsV2Response.cs#L94
+			if (response.CommonPrefixes is not null)
+			{
+			    result.AddRange(
+			        response.CommonPrefixes
+			            .Where(p => !StoragePath.IsRootPath(p))
+			            .Select(p => new Blob(p, BlobItemKind.Folder)));
+			}
 
 			return result;
 		}
