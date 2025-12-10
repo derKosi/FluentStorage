@@ -112,7 +112,7 @@ namespace FluentStorage {
 					tenantId,
 					applicationId,
 					applicationSecret,
-					new TokenCredentialOptions() { AuthorityHost = authorityHost });
+					new TokenCredentialOptions { AuthorityHost = authorityHost });
 
 			// Create a client that can authenticate using our token credential
 			var client = new BlobServiceClient(GetServiceUri(accountName, cloudEnvironment), credential);
@@ -158,7 +158,7 @@ namespace FluentStorage {
 					tenantId,
 					applicationId,
 					applicationSecret,
-					new TokenCredentialOptions() { AuthorityHost = authorityHost });
+					new TokenCredentialOptions { AuthorityHost = authorityHost });
 
 			// Create a client that can authenticate using our token credential
 			var client = new BlobServiceClient(GetServiceUri(accountName), credential);

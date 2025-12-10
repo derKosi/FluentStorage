@@ -57,9 +57,13 @@ namespace FluentStorage.Tests.Integration.Util {
 
 			FieldInfo fi = storageInstance.GetType().GetField("_client", BindingFlags.NonPublic | BindingFlags.Instance) ?? (storageInstance.GetType().BaseType?.GetField("_client", BindingFlags.NonPublic | BindingFlags.Instance));
 
-			if (fi == null) throw new InvalidOperationException("Could not find _client field on storage instance.");
+			if (fi is null) {
+				throw new InvalidOperationException("Could not find _client field on storage instance.");
+			}
 
-			if (fi.GetValue(storageInstance) is not BlobServiceClient client) throw new InvalidOperationException("_client field is not a BlobServiceClient.");
+			if (fi.GetValue(storageInstance) is not BlobServiceClient client) {
+				throw new InvalidOperationException("_client field is not a BlobServiceClient.");
+			}
 
 			return client;
 		}

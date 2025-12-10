@@ -40,14 +40,14 @@ namespace FluentStorage.Azure.Blobs
         /// </summary>
         internal static class Authority {
             /// <summary>Global Azure authority URI.</summary>
-            internal static Uri Global = AzureAuthorityHosts.AzurePublicCloud;
+            internal readonly static Uri Global = AzureAuthorityHosts.AzurePublicCloud;
             /// <summary>Azure China authority URI.</summary>
-            internal static Uri China = AzureAuthorityHosts.AzureChina;
+            internal readonly static Uri China = AzureAuthorityHosts.AzureChina;
             /// <summary>Azure US Government authority URI.</summary>
-            internal static Uri USGovernment = AzureAuthorityHosts.AzureGovernment;
+            internal readonly static Uri USGovernment = AzureAuthorityHosts.AzureGovernment;
             /// <summary>Azure Germany authority URI (obsolete).</summary>
             [Obsolete]
-            internal static Uri Germany = AzureAuthorityHosts.AzureGermany;
+			internal readonly static Uri Germany = AzureAuthorityHosts.AzureGermany;
         }
 
         /// <summary>
