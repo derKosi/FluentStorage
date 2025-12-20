@@ -6,6 +6,7 @@
 	public enum AzureCloudEnvironment {
 		/// <summary>
 		/// Azure Global Cloud (default)
+		/// Is also known as Public Cloud
 		/// </summary>
 		Global,
 
