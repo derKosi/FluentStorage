@@ -107,13 +107,15 @@ namespace FluentStorage.AWS.Blobs {
 			//the files are listed as the S3Objects member, but they don't specifically contain folders,
 			//but even if they do, they need to be filtered out
 
-			result.AddRange(
-			   response.S3Objects
-				  .Where(b => !b.Key.EndsWith("/")) //check if this is "virtual folder" as S3 console creates them (rubbish)
-				  .Select(b => b.ToBlob())
-				  .Where(options.IsMatch)
-				  .Where(b => options.BrowseFilter == null || options.BrowseFilter(b)));
-
+			if (response.S3Objects is not null) 
+			{
+				result.AddRange(
+			   		response.S3Objects
+				  	.Where(b => !b.Key.EndsWith("/")) //check if this is "virtual folder" as S3 console creates them (rubbish)
+				  	.Select(b => b.ToBlob())
+				  	.Where(options.IsMatch)
+				  	.Where(b => options.BrowseFilter == null || options.BrowseFilter(b)));
+			}
 			//subfolders are listed in another field (what a funny name!)
 
 			//prefix is absolute too
