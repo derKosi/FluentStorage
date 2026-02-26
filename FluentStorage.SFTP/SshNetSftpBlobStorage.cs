@@ -54,6 +54,12 @@ namespace FluentStorage.SFTP {
 		public string RootDirectory { get; private set; }
 
 		/// <summary>
+		/// Enable/disable calling SetLength() on created SftpStream when writing new blobs. Default true (set length).
+		/// Not required in all implementations. Requires sftp user permissions on file attributes.
+		/// </summary>
+		public bool SetLengthOnNewStream { get; set; } = true;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="T:FluentStorage.SFTP.SshNetSftpBlobStorage" /> class.
 		/// </summary>
 		/// <param name="connectionInfo">The connection info.</param>
@@ -427,7 +433,7 @@ namespace FluentStorage.SFTP {
 			try {
 				using (Stream dest = client.Open(fullPathWithRoot, fileMode, FileAccess.Write)) {
 					await dataStream.CopyToAsync(dest).ConfigureAwait(false);
-					if (append == false) {
+					if (append == false && SetLengthOnNewStream) {
 						dest.SetLength(dataStream.Length);
 					}
 				}
@@ -452,7 +458,7 @@ namespace FluentStorage.SFTP {
 
 				using (Stream dest = client.Open(fullPathWithRoot, fileMode, FileAccess.Write)) {
 					await dataStream.CopyToAsync(dest).ConfigureAwait(false);
-					if (append == false) {
+					if (append == false && SetLengthOnNewStream) {
 						dest.SetLength(dataStream.Length);
 					}
 				}
