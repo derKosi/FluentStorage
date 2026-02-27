@@ -361,11 +361,15 @@ namespace FluentStorage.SFTP {
 
 			SftpClient client = GetClient();
 
+			MemoryStream stream = new MemoryStream();
+
 			try {
-				byte[] fileBytes = await Task.FromResult(Policy.Handle<Exception>().Retry(MaxRetryCount).Execute(() => client.ReadAllBytes(fullPath)));
-				return new MemoryStream(fileBytes);
+				await Task.Run(() => Policy.Handle<Exception>().Retry(MaxRetryCount).Execute(() => client.DownloadFile(fullPath, stream)));
+				stream.Position = 0;
+				return stream;
 			}
 			catch (Exception /*exception*/) {
+				stream?.Dispose();
 				return null;
 			}
 		}
