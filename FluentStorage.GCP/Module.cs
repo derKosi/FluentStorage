@@ -9,7 +9,12 @@ namespace FluentStorage.Gcp.CloudStorage {
 		public IBlobStorage CreateBlobStorage(StorageConnectionString connectionString) {
 			if (connectionString.Prefix == "google.storage") {
 				connectionString.GetRequired("bucket", true, out string bucketName);
-				connectionString.GetRequired("cred", true, out string base64EncodedJson);
+				string base64EncodedJson = connectionString.Get("cred");
+
+				// When cred= is absent or empty, fall back to Application Default Credentials
+				// (Workload Identity on Cloud Run, gcloud auth application-default login locally)
+				if (string.IsNullOrEmpty(base64EncodedJson))
+					return StorageFactory.Blobs.GoogleCloudStorageFromEnvironmentVariable(bucketName);
 
 				return StorageFactory.Blobs.GoogleCloudStorageFromJson(bucketName, base64EncodedJson, true);
 			}
