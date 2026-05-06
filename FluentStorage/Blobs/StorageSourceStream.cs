@@ -68,8 +68,13 @@ namespace FluentStorage.Blobs {
 		/// Only allows seeks to beginning if no reads were performed
 		/// </summary>
 		public override long Seek(long offset, SeekOrigin origin) {
-			if (_noRead && offset == 0 && origin == SeekOrigin.Begin)
+			if (_noRead && offset == 0 && origin == SeekOrigin.Begin) {
+				// FIX #132: Some SDKs call Seek(0, Begin) before first read. Make sure we really rewind.
+				if (_origin.CanSeek) {
+					return _origin.Seek(0, SeekOrigin.Begin);
+				}
 				return 0;
+			}
 
 			throw new NotSupportedException();
 		}
